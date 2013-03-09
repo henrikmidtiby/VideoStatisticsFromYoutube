@@ -1,0 +1,11 @@
+DEPENDENCIES
+README
+apiclient/
+client_secrets.json
+gflags.py
+*.pyc
+gflags_validators.pyc
+httplib2/
+oauth2client/
+sample.dat
+uritemplate/
