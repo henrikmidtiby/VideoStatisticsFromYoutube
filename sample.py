@@ -115,6 +115,33 @@ def main(argv):
     print "Success! Now add code here."
 
 
+    channels_response = service.channels().list(
+        mine=True,
+        part="contentDetails"
+        ).execute()
+        
+    for channel in channels_response["items"]:
+        uploads_list_id = channel["contentDetails"]["relatedPlaylists"]["uploads"]
+        print uploads_list_id
+        print "Videos in list %s" % uploads_list_id
+        next_page_token = ""
+        while next_page_token is not None:
+            playlistitems_response = service.playlistItems().list(
+            playlistId=uploads_list_id,
+            part="snippet",
+            maxResults=50,
+            pageToken=next_page_token
+            ).execute()
+
+            for playlist_item in playlistitems_response["items"]:
+                title = playlist_item["snippet"]["title"]
+                video_id = playlist_item["snippet"]["resourceId"]["videoId"]
+                print "%s (%s)" % (title, video_id)
+            
+            next_page_token = playlistitems_response.get("tokenPagination", {}).get(
+                "nextPageToken")
+
+
     # For more information on the YouTube Data API API you can visit:
     #
     #   https://developers.google.com/youtube/v3
