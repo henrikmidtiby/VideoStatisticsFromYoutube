@@ -83,6 +83,38 @@ youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, http=http)
 youtube_analytics = build(YOUTUBE_ANALYTICS_API_SERVICE_NAME,
   YOUTUBE_ANALYTICS_API_VERSION, http=http)
 
+
+
+# What does my playlists contain?
+playlists = youtube.playlists().list(
+    mine=True,
+    part="snippet").execute()
+    
+fh = open('playlists.txt', 'w')
+fh.write("playlistId,playlistTitle,videoId\n")
+for item in playlists["items"]:
+    playlistId = item["id"]
+    playlistTitle = item["snippet"]["title"]
+    #print("id: %s" % playlistId)
+    #print("title: %s" % playlistTitle)
+    
+    next_page_token = ""
+    while next_page_token is not None:
+        elementsInPlaylist = youtube.playlistItems().list(
+            part="contentDetails",
+            playlistId=item["id"],
+            pageToken=next_page_token).execute()
+
+        for playlistItem in elementsInPlaylist["items"]:
+            videoId = playlistItem["contentDetails"]["videoId"]
+            fh.write("%s,\"%s\",%s\n" % (playlistId, playlistTitle, videoId))
+        
+        next_page_token = elementsInPlaylist.get(
+            "nextPageToken")
+fh.close()
+quit()
+
+# Iterate through all my videos
 channels_response = youtube.channels().list(
   mine=True,
   part="contentDetails"
@@ -116,28 +148,31 @@ for channel in channels_response["items"]:
             analytics_response = youtube_analytics.reports().query(
                 ids="channel==%s" % channel_id,
                 filters="video==%s" % video_id,
-                metrics="views",
+                metrics="estimatedMinutesWatched", # views, estimatedMinutesWatched
                 dimensions="day",
                 start_date="2012-01-01",
-                end_date="2013-03-11",
-                sort=options.sort
+                end_date="2013-03-11"
             ).execute()
                                 
             for row in analytics_response.get("rows", []):
                 tempData = (video_id, title, row[0], row[1])
                 datesAndViews.append(tempData)
             
-            if(len(videoIdsAndTitles) > 5):
-                break
-        if(len(videoIdsAndTitles) > 5):
-            break
+            #if(len(videoIdsAndTitles) > 5):
+            #    break
+        #if(len(videoIdsAndTitles) > 5):
+        #    break
 
-        quit()
+        #quit()
         next_page_token = playlistitems_response.get("tokenPagination", {}).get(
             "nextPageToken")
             
+fh = open('videoIdsAndTitles.txt', 'w')
 for data in videoIdsAndTitles:
-    print "%s,\"%s\"" % (data[0], data[1])            
+    fh.write("%s,\"%s\"\n" % (data[0], data[1]))
+fh.close()
             
+fh = open('datesAndViews.txt', 'w')
 for data in datesAndViews:
-    print "%s,%s,%d" % (data[0], data[2], data[3])
+    fh.write("%s,%s,%d\n" % (data[0], data[2], data[3]))
+fh.close()
