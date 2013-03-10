@@ -118,12 +118,12 @@ def main(argv):
       ids="contentOwner==henrikmidtiby",
       metrics="views",
       filters="video==ZOwCMPwVlTk")
-  viewInformationResponse = viewInformation.execute()
-  print inspect.getmembers(viewInformationResponse, predicate=inspect.ismethod)
+  #viewInformationResponse = viewInformation.execute()
+  #print inspect.getmembers(viewInformationResponse, predicate=inspect.ismethod)
   service = build('youtube', 'v3', http=http)
   
   
-  quit()
+  #quit()
   try:
 
 

@@ -93,7 +93,7 @@ for channel in channels_response["items"]:
 
 
     uploads_list_id = channel["contentDetails"]["relatedPlaylists"]["uploads"]
-    print uploads_list_id
+    print "Channel id: %s" % uploads_list_id
     print "Videos in list %s" % uploads_list_id
     next_page_token = ""
     while next_page_token is not None:
@@ -107,7 +107,34 @@ for channel in channels_response["items"]:
         for playlist_item in playlistitems_response["items"]:
             title = playlist_item["snippet"]["title"]
             video_id = playlist_item["snippet"]["resourceId"]["videoId"]
-            print "%s (%s)" % (title, video_id)
+            # print "%s (%s)" % (title, video_id)
+            
+            
+            
+            analytics_response = youtube_analytics.reports().query(
+                ids="channel==%s" % channel_id,
+                filters="video==%s" % video_id,
+                metrics="views",
+                dimensions="day",
+                start_date="2012-01-01",
+                end_date="2013-03-11",
+                max_results=options.max_results,
+                sort=options.sort
+            ).execute()
+                
+            #print "Analytics Data for Channel %s" % channel_id
+                
+            #for column_header in analytics_response.get("columnHeaders", []):
+            #    print "%-20s" % column_header["name"],
+            #print
+                
+            for row in analytics_response.get("rows", []):
+                print video_id, 
+                for value in row:
+                    print "%-20s" % value,
+                print
+            
+            
             
         
         next_page_token = playlistitems_response.get("tokenPagination", {}).get(
