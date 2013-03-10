@@ -88,9 +88,11 @@ channels_response = youtube.channels().list(
   part="contentDetails"
 ).execute()
 
+datesAndViews = []
+videoIdsAndTitles = []
+
 for channel in channels_response["items"]:
     channel_id = channel["id"]
-
 
     uploads_list_id = channel["contentDetails"]["relatedPlaylists"]["uploads"]
     print "Channel id: %s" % uploads_list_id
@@ -107,9 +109,9 @@ for channel in channels_response["items"]:
         for playlist_item in playlistitems_response["items"]:
             title = playlist_item["snippet"]["title"]
             video_id = playlist_item["snippet"]["resourceId"]["videoId"]
-            # print "%s (%s)" % (title, video_id)
-            
-            
+            print "%s (%s)" % (title, video_id)
+            tempIdAndTitle = (video_id, title)
+            videoIdsAndTitles.append(tempIdAndTitle)
             
             analytics_response = youtube_analytics.reports().query(
                 ids="channel==%s" % channel_id,
@@ -118,55 +120,24 @@ for channel in channels_response["items"]:
                 dimensions="day",
                 start_date="2012-01-01",
                 end_date="2013-03-11",
-                max_results=options.max_results,
                 sort=options.sort
             ).execute()
-                
-            #print "Analytics Data for Channel %s" % channel_id
-                
-            #for column_header in analytics_response.get("columnHeaders", []):
-            #    print "%-20s" % column_header["name"],
-            #print
-                
+                                
             for row in analytics_response.get("rows", []):
-                print video_id, 
-                for value in row:
-                    print "%-20s" % value,
-                print
+                tempData = (video_id, title, row[0], row[1])
+                datesAndViews.append(tempData)
             
-            
-            
-        
+            if(len(videoIdsAndTitles) > 5):
+                break
+        if(len(videoIdsAndTitles) > 5):
+            break
+
+        quit()
         next_page_token = playlistitems_response.get("tokenPagination", {}).get(
             "nextPageToken")
-
-
-
-
-    break
-
-
-
-
-
-    analytics_response = youtube_analytics.reports().query(
-        ids="channel==%s" % channel_id,
-        metrics=options.metrics,
-        dimensions=options.dimensions,
-        start_date=options.start_date,
-        end_date=options.end_date,
-        start_index=options.start_index,
-        max_results=options.max_results,
-        sort=options.sort
-    ).execute()
-        
-    print "Analytics Data for Channel %s" % channel_id
-        
-    for column_header in analytics_response.get("columnHeaders", []):
-        print "%-20s" % column_header["name"],
-    print
-        
-    for row in analytics_response.get("rows", []):
-        for value in row:
-            print "%-20s" % value,
-        print
+            
+for data in videoIdsAndTitles:
+    print "%s,\"%s\"" % (data[0], data[1])            
+            
+for data in datesAndViews:
+    print "%s,%s,%d" % (data[0], data[2], data[3])
