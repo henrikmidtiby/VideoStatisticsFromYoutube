@@ -23,7 +23,7 @@ by running:
 
   $ python sample.py --help
 
-To get detailed log output run:
+To get detailed log output run:http = credentials.authorize(http)
 
   $ python sample.py --logging_level=DEBUG
 """
@@ -34,6 +34,7 @@ import logging
 import os
 import pprint
 import sys
+import inspect
 
 from apiclient.discovery import build
 from oauth2client.file import Storage
@@ -108,11 +109,22 @@ def main(argv):
   http = httplib2.Http()
   http = credentials.authorize(http)
 
+  analytics = build('youtubeAnalytics', 'v1', http=http)
+  #print "What is analytics?"
+  #print inspect.getmembers(analytics, predicate=inspect.ismethod)
+  viewInformation = analytics.reports().query(
+      start_date="2013-01-01",
+      end_date="2013-03-03",
+      ids="contentOwner==henrikmidtiby",
+      metrics="views",
+      filters="video==ZOwCMPwVlTk")
+  viewInformationResponse = viewInformation.execute()
+  print inspect.getmembers(viewInformationResponse, predicate=inspect.ismethod)
   service = build('youtube', 'v3', http=http)
-
+  
+  
+  quit()
   try:
-
-    print "Success! Now add code here."
 
 
     channels_response = service.channels().list(
@@ -137,6 +149,7 @@ def main(argv):
                 title = playlist_item["snippet"]["title"]
                 video_id = playlist_item["snippet"]["resourceId"]["videoId"]
                 print "%s (%s)" % (title, video_id)
+                
             
             next_page_token = playlistitems_response.get("tokenPagination", {}).get(
                 "nextPageToken")
