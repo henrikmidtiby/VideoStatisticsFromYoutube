@@ -12,6 +12,7 @@ from oauth2client.tools import run
 from optparse import OptionParser
 
 
+
 # CLIENT_SECRETS_FILE, name of a file containing the OAuth 2.0 information for
 # this application, including client_id and client_secret. You can acquire an
 # ID/secret pair from the API Access tab on the Google APIs Console
@@ -86,6 +87,7 @@ youtube_analytics = build(YOUTUBE_ANALYTICS_API_SERVICE_NAME,
 
 
 # What does my playlists contain?
+print("Fetching playlists")
 playlists = youtube.playlists().list(
     mine=True,
     part="snippet").execute()
@@ -107,14 +109,19 @@ for item in playlists["items"]:
 
         for playlistItem in elementsInPlaylist["items"]:
             videoId = playlistItem["contentDetails"]["videoId"]
-            fh.write("%s,\"%s\",%s\n" % (playlistId, playlistTitle, videoId))
+            playlistIdAscii = playlistId.encode('ascii')
+            print(playlistTitle)
+            playlistTitleAscii = playlistTitle.encode('ascii', 'ignore')
+            videoIdAscii = videoId.encode('ascii')
+            fh.write("%s,\"%s\",%s\n" % (playlistIdAscii, playlistTitleAscii, videoIdAscii))
         
         next_page_token = elementsInPlaylist.get(
             "nextPageToken")
 fh.close()
-quit()
+
 
 # Iterate through all my videos
+print("Get view statistics for all my videos")
 channels_response = youtube.channels().list(
   mine=True,
   part="contentDetails"
@@ -169,10 +176,15 @@ for channel in channels_response["items"]:
             
 fh = open('videoIdsAndTitles.txt', 'w')
 for data in videoIdsAndTitles:
-    fh.write("%s,\"%s\"\n" % (data[0], data[1]))
+    videoIdAscii = data[0].encode('ascii', 'ignore')
+    videoTitleAscii = data[1].encode('ascii', 'ignore')
+    fh.write("%s,\"%s\"\n" % (videoIdAscii, videoTitleAscii))
 fh.close()
             
 fh = open('datesAndViews.txt', 'w')
 for data in datesAndViews:
-    fh.write("%s,%s,%d\n" % (data[0], data[2], data[3]))
+    videoIdAscii = data[0].encode('ascii', 'ignore')
+    videoViewDateAscii = data[2].encode('ascii', 'ignore')
+    videoViews = data[3]
+    fh.write("%s,%s,%d\n" % (videoIdAscii, videoViewDateAscii, videoViews))
 fh.close()
