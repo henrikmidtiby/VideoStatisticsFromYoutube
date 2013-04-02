@@ -109,10 +109,9 @@ for item in playlists["items"]:
 
         for playlistItem in elementsInPlaylist["items"]:
             videoId = playlistItem["contentDetails"]["videoId"]
-            playlistIdAscii = playlistId.encode('ascii')
-            print(playlistTitle)
-            playlistTitleAscii = playlistTitle.encode('ascii', 'ignore')
-            videoIdAscii = videoId.encode('ascii')
+            playlistIdAscii = playlistId.encode('utf-8')
+            playlistTitleAscii = playlistTitle.encode('utf-8', 'ignore')
+            videoIdAscii = videoId.encode('utf-8')
             fh.write("%s,\"%s\",%s\n" % (playlistIdAscii, playlistTitleAscii, videoIdAscii))
         
         next_page_token = elementsInPlaylist.get(
@@ -176,15 +175,15 @@ for channel in channels_response["items"]:
             
 fh = open('videoIdsAndTitles.txt', 'w')
 for data in videoIdsAndTitles:
-    videoIdAscii = data[0].encode('ascii', 'ignore')
-    videoTitleAscii = data[1].encode('ascii', 'ignore')
+    videoIdAscii = data[0].encode('utf-8', 'ignore')
+    videoTitleAscii = data[1].encode('utf-8', 'ignore')
     fh.write("%s,\"%s\"\n" % (videoIdAscii, videoTitleAscii))
 fh.close()
             
 fh = open('datesAndViews.txt', 'w')
 for data in datesAndViews:
-    videoIdAscii = data[0].encode('ascii', 'ignore')
-    videoViewDateAscii = data[2].encode('ascii', 'ignore')
+    videoIdAscii = data[0].encode('utf-8', 'ignore')
+    videoViewDateAscii = data[2].encode('utf-8', 'ignore')
     videoViews = data[3]
     fh.write("%s,%s,%d\n" % (videoIdAscii, videoViewDateAscii, videoViews))
 fh.close()
