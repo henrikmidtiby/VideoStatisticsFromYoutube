@@ -157,7 +157,7 @@ for channel in channels_response["items"]:
                 metrics="estimatedMinutesWatched", # views, estimatedMinutesWatched
                 dimensions="day",
                 start_date="2012-01-01",
-                end_date="2013-03-11"
+                end_date="2013-10-11"
             ).execute()
                                 
             for row in analytics_response.get("rows", []):
