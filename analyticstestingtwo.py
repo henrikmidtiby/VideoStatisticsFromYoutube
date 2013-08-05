@@ -156,6 +156,8 @@ for channel in channels_response["items"]:
                 filters="video==%s" % video_id,
                 metrics="estimatedMinutesWatched", # views, estimatedMinutesWatched
                 dimensions="day",
+                max_results=1000,
+                sort="day",
                 start_date="2012-01-01",
                 end_date="2013-10-11"
             ).execute()
