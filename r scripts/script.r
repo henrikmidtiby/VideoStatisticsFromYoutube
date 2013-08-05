@@ -41,17 +41,18 @@ ggsave("plots/02 Minutes watched of IFG1 in fall semester 2013.pdf", p)
 cumulatedViewsPerDate = ddply(totalViewsPerDate, .(playlistTitle), transform, viewsCumulated = cumsum(totalViews))
 p <- ggplot(cumulatedViewsPerDate) + 
   geom_line(aes(date, viewsCumulated, colour=playlistTitle)) + 
-  xlab('Dato') + ylab('Tid [min]') + 
-  opts(title = 'Samlet antal sete videominutter', legend.position=c(0.2,0.8))
+  xlab('Date') + ylab('Time [min]') + 
+  scale_x_date(breaks = "1 month", minor_breaks = "1 week", labels=date_format("%d %b %Y")) +  
+  opts(title = 'Total minutes of watched video', legend.position=c(0.2,0.8))
 #p
 ggsave("plots/03 Cumulated minutes of watched video.pdf", p, width=10, height=6)
 
 p <- ggplot(cumulatedViewsPerDate) + 
   geom_line(aes(date, viewsCumulated, colour=playlistTitle), alpha=0.5) + 
   geom_line(data=totalViewsPerDate, aes(date, 4*totalViews, colour=playlistTitle), alpha=1.0) + 
-  xlab('Dato') + ylab('Samlet set tid [min] eller 4 x tid set per dag [min]') + 
+  xlab('Date') + ylab('Total time seen [min] or 4 x time seen per day [min]') + 
   scale_x_date(breaks = "1 month", minor_breaks = "1 week", labels=date_format("%d %b %Y")) +
-  opts(title = 'Samlet antal sete videominutter', legend.position=c(0.2,0.8)) + 
+  opts(title = 'Total minutes of watched video', legend.position=c(0.2,0.8)) + 
   scale_colour_discrete(name = "Playlist")
 p
 ggsave("plots/04 Cumulated minutes of watched video.pdf", p, width=10, height=6)
