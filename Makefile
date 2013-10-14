@@ -1,5 +1,16 @@
+LOGFILE := $(shell date +'%Y-%m-%d_%H:%M:%S')
+
 getDataFromYoutube:
 	ipython analyticstestingtwo.py
+	@echo $(LOGFILE)
+	@mkdir $(LOGFILE)
+	@mkdir $(LOGFILE)/plots
+	@cp Makefile $(LOGFILE)/Makefile
+	@cp videoIdsAndTitles.txt $(LOGFILE)/
+	@cp datesAndViews.txt $(LOGFILE)/
+	@cp playlists.txt $(LOGFILE)/
+	@cp r\ scripts/script.r $(LOGFILE)/
+	cd $(LOGFILE) && make generatePlots
 
 generatePlots:
-	cd r\ scripts && R --no-save < script.r
+	R --no-save < script.r
