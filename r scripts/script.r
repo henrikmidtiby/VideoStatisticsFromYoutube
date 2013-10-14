@@ -13,11 +13,32 @@ viewsOfVideoCombined <- rbind(viewsOfVideoOne, viewsOfVideoTwo)
 viewsOfVideo <- viewsOfVideoCombined[!duplicated(viewsOfVideoCombined), ]
 colnames(viewsOfVideo) <- c('videoId', 'date', 'views')
 viewsOfVideo$date <- as.Date(viewsOfVideo$date)
+viewsOfVideo$year <- substr(viewsOfVideo$date, 1, 4)
+viewsOfVideo$month <- substr(viewsOfVideo$date, 6, 7)
+viewsOfVideo$day <- substr(viewsOfVideo$date, 9, 10)
 
 viewOnPlaylists <- merge(viewsOfVideo, playlistContents, by='videoId')
 
 # Calculate total number of views
 totalViewsPerDate <- ddply(viewOnPlaylists, .(date, playlistTitle), summarize, totalViews=sum(views))
+viewsPerDate <- ddply(viewOnPlaylists, .(date), summarize, totalViews=sum(views))
+
+# Calculate total number of views per video per month
+totalViewsPerVideoPerMonth <- ddply(viewsOfVideo, .(year, month, videoId), summarize, totalViews=sum(views))
+titlesViewPerMonth <- merge(totalViewsPerVideoPerMonth, titles, by='videoId')
+titlesViewPerMonth$videoTitleShort <- substr(titlesViewPerMonth$videoTitle, 0, 50)
+temp <- titlesViewPerMonth[order(-titlesViewPerMonth$totalViews), c('year', 'month', 'totalViews', 'videoTitle', 'videoTitleShort')]
+temp[, c('year', 'month', 'totalViews', 'videoTitleShort')]
+
+extractFiveVideosWithMostViews <- function(df)
+{
+  print(df)
+  temp <- df[order(-df$totalViews), c('year', 'month', 'totalViews', 'videoTitleShort')]  
+  tempTwo <- head(temp, 5)
+  print(tempTwo)
+  tempTwo
+}
+ddply(titlesViewPerMonth, .(year, month), extractFiveVideosWithMostViews)
 
 # General overview of minutes watched on different playlists.
 p <- ggplot(totalViewsPerDate) + 
@@ -56,4 +77,18 @@ p <- ggplot(cumulatedViewsPerDate) +
   scale_colour_discrete(name = "Playlist")
 p
 ggsave("plots/04 Cumulated minutes of watched video.pdf", p, width=10, height=6)
+
+p <- ggplot(viewsPerDate[viewsPerDate$date < '2013-02-01', ]) + 
+  geom_line(aes(date, totalViews), alpha=0.5) + 
+  xlab('Date') + ylab('Watched video [min]') + 
+  scale_x_date(breaks = "1 month", minor_breaks = "1 week", labels=date_format("%d %b %Y")) +
+  opts(title = 'Watched video', legend.position=c(0.2,0.8)) + 
+  scale_colour_discrete(name = "Playlist")
+p
+ggsave("plots/05MinutesWatched.pdf", p, width=10, height=6)
+# TODO: Update dates
+#examdates <- data.frame(date = as.Date(c('2013-01-04', '2013-01-25', '2013-06-03', '2013-06-25')))
+examdates <- data.frame(date = as.Date(c('2013-01-04', '2013-01-25')))
+pp <- p + geom_vline(aes(xintercept=as.numeric(date)), examdates, color='red')
+ggsave("plots/05MinutesWatchedExamDate.pdf", pp, width=10, height=6)
 
