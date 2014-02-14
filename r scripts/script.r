@@ -7,10 +7,8 @@ library(scales)
 playlistContents <- read.table('../playlists.txt', sep=',', header=T)
 titles <- read.table('../videoIdsAndTitles.txt', sep=',')
 colnames(titles) <- c('videoId', 'videoTitle')
-viewsOfVideoOne <- read.table('../datesAndViews.txt', sep=',')
-viewsOfVideoTwo <- read.table('../2013-04-14datesAndViews.txt', sep=',')
-viewsOfVideoCombined <- rbind(viewsOfVideoOne, viewsOfVideoTwo)
-viewsOfVideo <- viewsOfVideoCombined[!duplicated(viewsOfVideoCombined), ]
+viewsOfVideo <- read.table('../datesAndViews.txt', sep=',')
+
 colnames(viewsOfVideo) <- c('videoId', 'date', 'views')
 viewsOfVideo$date <- as.Date(viewsOfVideo$date)
 viewsOfVideo$year <- substr(viewsOfVideo$date, 1, 4)
