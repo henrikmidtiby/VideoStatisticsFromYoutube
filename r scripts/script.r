@@ -14,8 +14,11 @@ viewsOfVideo$date <- as.Date(viewsOfVideo$date)
 viewsOfVideo$year <- substr(viewsOfVideo$date, 1, 4)
 viewsOfVideo$month <- substr(viewsOfVideo$date, 6, 7)
 viewsOfVideo$day <- substr(viewsOfVideo$date, 9, 10)
-
 viewOnPlaylists <- merge(viewsOfVideo, playlistContents, by='videoId')
+
+# Subset to interesting time period
+viewsOfVideo <- subset(viewsOfVideo, viewsOfVideo$date > '2013-08-31')
+viewOnPlaylists <- subset(viewOnPlaylists, viewOnPlaylists$date > '2013-08-31')
 
 # Calculate total number of views
 totalViewsPerDate <- ddply(viewOnPlaylists, .(date, playlistTitle), summarize, totalViews=sum(views))
