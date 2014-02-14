@@ -48,17 +48,6 @@ p <- ggplot(totalViewsPerDate) +
 #p
 ggsave("plots/01 General overview.pdf", p, width=10, height=6)
 
-# Specific view of fall semester and IFG1 videos
-inFallSemester = subset(totalViewsPerDate, 
-                        as.Date(totalViewsPerDate$date) > "2012-09-01" &
-                          as.Date(totalViewsPerDate$date) < "2013-01-31")
-p <- ggplot(subset(inFallSemester, inFallSemester$playlistTitle == 'IFG1 - Introduktion til Matematik og Fysik')) + 
-  geom_line(aes(date, totalViews)) + 
-  xlab('Dato') + ylab('Minutter set')
-#p
-ggsave("plots/02 Minutes watched of IFG1 in fall semester 2013.pdf", p)
-
-
 
 cumulatedViewsPerDate = ddply(totalViewsPerDate, .(playlistTitle), transform, viewsCumulated = cumsum(totalViews))
 p <- ggplot(cumulatedViewsPerDate) + 
@@ -78,18 +67,4 @@ p <- ggplot(cumulatedViewsPerDate) +
   scale_colour_discrete(name = "Playlist")
 p
 ggsave("plots/04 Cumulated minutes of watched video.pdf", p, width=10, height=6)
-
-p <- ggplot(viewsPerDate[viewsPerDate$date < '2013-02-01', ]) + 
-  geom_line(aes(date, totalViews), alpha=0.5) + 
-  xlab('Date') + ylab('Watched video [min]') + 
-  scale_x_date(breaks = "1 month", minor_breaks = "1 week", labels=date_format("%d %b %Y")) +
-  opts(title = 'Watched video', legend.position=c(0.2,0.8)) + 
-  scale_colour_discrete(name = "Playlist")
-p
-ggsave("plots/05MinutesWatched.pdf", p, width=10, height=6)
-# TODO: Update dates
-#examdates <- data.frame(date = as.Date(c('2013-01-04', '2013-01-25', '2013-06-03', '2013-06-25')))
-examdates <- data.frame(date = as.Date(c('2013-01-04', '2013-01-25')))
-pp <- p + geom_vline(aes(xintercept=as.numeric(date)), examdates, color='red')
-ggsave("plots/05MinutesWatchedExamDate.pdf", pp, width=10, height=6)
 
