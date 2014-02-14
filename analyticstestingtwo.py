@@ -172,9 +172,8 @@ for channel in channels_response["items"]:
         #    break
 
         #quit()
-        next_page_token = playlistitems_response.get("tokenPagination", {}).get(
-            "nextPageToken")
-            
+        next_page_token = playlistitems_response.get("nextPageToken")
+
 fh = open('videoIdsAndTitles.txt', 'w')
 for data in videoIdsAndTitles:
     videoIdAscii = data[0].encode('utf-8', 'ignore')
