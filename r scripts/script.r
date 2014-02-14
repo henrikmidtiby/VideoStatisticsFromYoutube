@@ -44,8 +44,8 @@ ddply(titlesViewPerMonth, .(year, month), extractFiveVideosWithMostViews)
 # General overview of minutes watched on different playlists.
 p <- ggplot(totalViewsPerDate) + 
     geom_line(aes(date, totalViews, colour=playlistTitle)) + 
-    xlab('Dato') + ylab('Minutter set')
-#p
+    xlab('Dato') + ylab('Minutter set') +
+    scale_x_date(breaks = "1 month", minor_breaks = "1 week", labels=date_format("%d %b %Y"))
 ggsave("plots/01 General overview.pdf", p, width=10, height=6)
 
 
@@ -54,8 +54,8 @@ p <- ggplot(cumulatedViewsPerDate) +
   geom_line(aes(date, viewsCumulated, colour=playlistTitle)) + 
   xlab('Date') + ylab('Time [min]') + 
   scale_x_date(breaks = "1 month", minor_breaks = "1 week", labels=date_format("%d %b %Y")) +  
-  opts(title = 'Total minutes of watched video', legend.position=c(0.2,0.8))
-#p
+  labs(title = 'Total minutes of watched video') + 
+  theme(legend.position=c(0.2,0.8))
 ggsave("plots/03 Cumulated minutes of watched video.pdf", p, width=10, height=6)
 
 p <- ggplot(cumulatedViewsPerDate) + 
@@ -63,8 +63,8 @@ p <- ggplot(cumulatedViewsPerDate) +
   geom_line(data=totalViewsPerDate, aes(date, 4*totalViews, colour=playlistTitle), alpha=1.0) + 
   xlab('Date') + ylab('Total time seen [min] or 4 x time seen per day [min]') + 
   scale_x_date(breaks = "1 month", minor_breaks = "1 week", labels=date_format("%d %b %Y")) +
-  opts(title = 'Total minutes of watched video', legend.position=c(0.2,0.8)) + 
-  scale_colour_discrete(name = "Playlist")
-p
+  scale_colour_discrete(name = "Playlist") +
+  labs(title = 'Total minutes of watched video') + 
+  theme(legend.position=c(0.2,0.8))
 ggsave("plots/04 Cumulated minutes of watched video.pdf", p, width=10, height=6)
 
