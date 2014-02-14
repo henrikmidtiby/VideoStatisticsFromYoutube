@@ -1,7 +1,7 @@
 LOGFILE := $(shell date +'%Y-%m-%d_%H:%M:%S')
 
 getDataFromYoutube:
-	ipython analyticstestingtwo.py
+	ipython retrievedatafromyoutube.py
 	@echo $(LOGFILE)
 	@mkdir $(LOGFILE)
 	@mkdir $(LOGFILE)/plots
