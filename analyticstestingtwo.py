@@ -159,7 +159,7 @@ for channel in channels_response["items"]:
                 max_results=1000,
                 sort="day",
                 start_date="2012-01-01",
-                end_date="2013-10-31"
+                end_date="2014-10-31"
             ).execute()
                                 
             for row in analytics_response.get("rows", []):
