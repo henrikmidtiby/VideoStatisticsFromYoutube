@@ -1,9 +1,7 @@
 DEPENDENCIES
 README
 client_secrets.json
-gflags.py
 *.pyc
-gflags_validators.pyc
 httplib2/
 sample.dat
 2014*/
