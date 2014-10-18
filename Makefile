@@ -15,4 +15,4 @@ getDataFromYoutube:
 
 generatePlots:
 	Rscript -e "library(knitr); knit('youtubestatistics.Rnw')"
-	pdflatex youtubestatictics.tex
+	pdflatex youtubestatistics.tex
