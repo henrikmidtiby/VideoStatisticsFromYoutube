@@ -10,7 +10,9 @@ getDataFromYoutube:
 	@cp datesAndViews.txt $(LOGFILE)/
 	@cp playlists.txt $(LOGFILE)/
 	@cp r\ scripts/script.r $(LOGFILE)/
+	@cp r\ scripts/youtubestatistics.Rnw $(LOGFILE)/
 	cd $(LOGFILE) && make generatePlots
 
 generatePlots:
-	R --no-save < script.r
+	Rscript -e "library(knitr); knit('youtubestatistics.Rnw')"
+	pdflatex youtubestatictics.tex
