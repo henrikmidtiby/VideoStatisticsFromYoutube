@@ -1,6 +1,5 @@
 DEPENDENCIES
 README
-apiclient/
 client_secrets.json
 gflags.py
 *.pyc
