@@ -1,5 +1,4 @@
 DEPENDENCIES
-README
 client_secrets.json
 *.pyc
 httplib2/
